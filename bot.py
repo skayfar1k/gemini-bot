@@ -44,7 +44,7 @@ async def chat_with_gemini(msg: Message):
         # Вызов Gemini
         response = await asyncio.to_thread(
             client.models.generate_content,
-            model="gemini-2.5-flash",
+            model="gemini-3.8-flash",
             contents=f"История диалога:\n{user_histories[user_id]}\n\nПользователь: {msg.text}"
         )
         
