@@ -11,24 +11,15 @@ from openai import AsyncOpenAI
 
 # --- Настройки ---
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-# Имя переменной может быть GROQ_API_KEY или OPENROUTER_API_KEY
 AI_API_KEY = os.getenv("AI_API_KEY") 
 WEBHOOK_URL = os.getenv("RENDER_EXTERNAL_URL", "https://localhost")
 
-# --- Выбираем провайдера ---
-# Для Groq (раскомментируйте эти строки):
+# --- Настройка клиента Groq ---
 client = AsyncOpenAI(
     base_url="https://api.groq.com/openai/v1",
     api_key=AI_API_KEY,
 )
-MODEL_NAME = "openai/gpt-oss-120b"  # или "llama-3.3-70b-versatile"
-
-# Для OpenRouter (закомментируйте Groq и раскомментируйте это):
-# client = AsyncOpenAI(
-#     base_url="https://openrouter.ai/api/v1",
-#     api_key=AI_API_KEY,
-# )
-# MODEL_NAME = "cohere/north-mini-code:free"  # или "baidu/ernie-5.5-flash-preview:free"
+MODEL_NAME = "openai/gpt-oss-120b" # Модель Groq
 
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
@@ -66,7 +57,9 @@ async def chat_with_ai(msg: Message):
         )
         
         answer = response.choices[0].message.content
-        await msg.answer(answer)
+        
+        # ВОТ ТУТ ИСПРАВЛЕНИЕ: parse_mode=None отключает HTML-разметку для ответов ИИ
+        await msg.answer(answer, parse_mode=None)
 
         user_histories[user_id].append(("user", msg.text))
         user_histories[user_id].append(("assistant", answer))
